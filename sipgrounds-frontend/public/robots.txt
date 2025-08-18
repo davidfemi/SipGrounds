@@ -1,0 +1,66 @@
+# Robots.txt for Sip Grounds
+# https://yourdomain.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Disallow private/secure areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /profile
+Disallow: /orders
+Disallow: /rewards
+Disallow: /checkout
+Disallow: /login
+Disallow: /register
+Disallow: /cafes/new
+Disallow: /cafes/*/edit
+Disallow: /bookings/
+
+# Allow important content
+Allow: /
+Allow: /cafes
+Allow: /cafes/*
+Allow: /shop
+Allow: /menu
+Allow: /menu/*
+Allow: /products/*
+Allow: /polls
+
+# Sitemap location
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1
+
+# Specific instructions for major search engines
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /profile
+Disallow: /orders
+Disallow: /rewards
+Disallow: /checkout
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /profile
+Disallow: /orders
+Disallow: /rewards
+Disallow: /checkout
+
+# Block common unwanted bots
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

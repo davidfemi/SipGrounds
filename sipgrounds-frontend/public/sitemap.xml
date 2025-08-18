@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+<!-- Main Pages -->
+<url>
+  <loc>https://yourdomain.com/</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>1.0</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/cafes</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>0.9</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/shop</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/polls</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.6</priority>
+</url>
+
+<!-- Authentication Pages -->
+<url>
+  <loc>https://yourdomain.com/login</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/register</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<!-- Menu Categories -->
+<url>
+  <loc>https://yourdomain.com/menu/hot-coffee</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.7</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/iced-coffee</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.7</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/espresso</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.7</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/tea</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.7</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/smoothies</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.7</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/pastries</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.7</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/sandwiches</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.7</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/breakfast</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.7</priority>
+</url>
+
+<!-- Sample Menu Items (these would be dynamically generated) -->
+<url>
+  <loc>https://yourdomain.com/menu/item/americano</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.6</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/item/cappuccino</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.6</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/item/latte</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.6</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/item/mocha</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.6</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/menu/item/macchiato</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.6</priority>
+</url>
+
+<!-- Static Content Pages -->
+<url>
+  <loc>https://yourdomain.com/about</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>yearly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/contact</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>yearly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/privacy</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>yearly</changefreq>
+  <priority>0.3</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/terms</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>yearly</changefreq>
+  <priority>0.3</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/faq</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>https://yourdomain.com/sitemap</loc>
+  <lastmod>2024-01-01</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.4</priority>
+</url>
+
+</urlset>
