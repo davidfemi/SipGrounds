@@ -1,0 +1,24 @@
+{
+  "name": "the-campgrounds-monorepo",
+  "version": "1.0.0",
+  "description": "The Campgrounds Full Stack Application",
+  "scripts": {
+    "build": "./build.sh",
+    "start": "./start.sh",
+    "dev": "cd yelpcamp-backend && npm run dev",
+    "postinstall": "cd yelpcamp-backend && npm install"
+  },
+  "keywords": [
+    "the-campgrounds",
+    "campgrounds",
+    "fullstack",
+    "express",
+    "react",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+} 
