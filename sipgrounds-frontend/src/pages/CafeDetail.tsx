@@ -19,6 +19,7 @@ import { useAuth } from '../context/AuthContext';
 import LoadingScreen from '../components/LoadingScreen';
 import SEOHead from '../components/SEOHead';
 import { toast } from 'react-toastify';
+import { trackCafeEvent, sipGroundsEvents } from '../services/intercomService';
 
 const CafeDetail: React.FC = () => {
   const [cafe, setCafe] = useState<Cafe | null>(null);
@@ -47,7 +48,11 @@ const CafeDetail: React.FC = () => {
     try {
       const response = await cafesAPI.getById(cafeId);
       if (response.success && response.data) {
-        setCafe(response.data.cafe);
+        const cafeData = response.data.cafe;
+        setCafe(cafeData);
+        
+        // Track cafe view event for Intercom
+        trackCafeEvent(sipGroundsEvents.CAFE_VIEWED, cafeData, user);
       } else {
         setError('Café not found');
       }
@@ -163,7 +168,11 @@ const CafeDetail: React.FC = () => {
           <i className="fas fa-exclamation-triangle me-2"></i>
           {error || 'Café not found'}
         </Alert>
-        <Button variant="primary" onClick={() => navigate('/cafes')}>
+        <Button 
+          onClick={() => navigate('/cafes')}
+          style={{ backgroundColor: '#f59e0b', borderColor: '#f59e0b' }}
+          className="text-white"
+        >
           <i className="fas fa-arrow-left me-2"></i>
           Back to Cafés
         </Button>

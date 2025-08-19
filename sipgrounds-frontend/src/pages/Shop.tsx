@@ -18,6 +18,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import SEOHead from '../components/SEOHead';
 import LoadingScreen from '../components/LoadingScreen';
+import { trackShopEvent, sipGroundsEvents } from '../services/intercomService';
 
 interface ShippingAddress {
   name: string;
@@ -81,6 +82,14 @@ const Shop: React.FC = () => {
   };
 
   const handleCheckout = () => {
+    // Track checkout initiation
+    const orderData = {
+      items: cart,
+      totalAmount: getCartTotal(),
+      item_count: getCartItemCount()
+    };
+    trackShopEvent('checkout_initiated', orderData, user);
+    
     navigate('/checkout');
   };
 

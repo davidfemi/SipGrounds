@@ -4,15 +4,16 @@ let isBooted = false;
 // Get Intercom app ID from environment variables
 const INTERCOM_APP_ID = process.env.REACT_APP_INTERCOM_APP_ID || 'hqd6b4qh';
 
-// Disable Intercom launcher and all activity
-const DISABLE_INTERCOM = true;
+// Enable Intercom launcher and activity
+const DISABLE_INTERCOM = false;
 
 // Check if Intercom should be enabled
 const isIntercomEnabled = () => {
   // Return false to disable Intercom entirely
   if (DISABLE_INTERCOM) return false;
   
-  return false;
+  // Enable Intercom if we have an app ID
+  return !!INTERCOM_APP_ID;
 };
 
 // Booking-related types for better type safety
@@ -91,6 +92,25 @@ const calculateBookingStats = (bookings: any[]): BookingStats => {
   };
 };
 
+// Initialize Intercom for anonymous visitors
+export const initIntercomForVisitors = () => {
+  if (!isIntercomEnabled()) {
+    return;
+  }
+
+  try {
+    if (!isBooted) {
+      window.Intercom('boot', {
+        app_id: INTERCOM_APP_ID,
+        // No user data for anonymous visitors
+      });
+      isBooted = true;
+    }
+  } catch (error) {
+    console.warn('Intercom visitor init failed:', error);
+  }
+};
+
 // Update Intercom with user data including booking information
 export const updateIntercomUser = (user: any, bookings?: any[]) => {
   // Skip if Intercom is not enabled
@@ -100,11 +120,10 @@ export const updateIntercomUser = (user: any, bookings?: any[]) => {
 
   if (!user) {
     try {
-      // If no user, shutdown Intercom session and reset boot state
-      window.Intercom('shutdown');
-      isBooted = false;
+      // If no user, boot for anonymous visitors instead of shutting down
+      initIntercomForVisitors();
     } catch (error) {
-      console.warn('Intercom shutdown failed:', error);
+      console.warn('Intercom visitor fallback failed:', error);
     }
     return;
   }
@@ -311,4 +330,72 @@ export const shutdownIntercom = () => {
   } catch (error) {
     console.warn('Intercom shutdown failed:', error);
   }
+};
+
+// Show new message composer
+export const showNewMessage = (message?: string) => {
+  if (!isIntercomEnabled()) return;
+  
+  try {
+    if (message) {
+      window.Intercom('showNewMessage', message);
+    } else {
+      window.Intercom('showNewMessage');
+    }
+  } catch (error) {
+    console.warn('Intercom showNewMessage failed:', error);
+  }
+};
+
+// Track custom events for Sip Grounds specific actions
+export const trackCafeEvent = (eventName: string, cafeData: any, userData?: any) => {
+  if (!isIntercomEnabled()) return;
+
+  const eventData = {
+    cafe_id: cafeData._id || cafeData.id,
+    cafe_name: cafeData.name || cafeData.title,
+    cafe_location: cafeData.location,
+    cafe_price_range: cafeData.priceRange,
+    cafe_rating: cafeData.averageRating,
+    points_multiplier: cafeData.pointsMultiplier,
+    ...(userData && { user_id: userData.id })
+  };
+
+  try {
+    window.Intercom('trackEvent', eventName, eventData);
+  } catch (error) {
+    console.warn('Intercom trackEvent failed:', error);
+  }
+};
+
+// Track shop/order events
+export const trackShopEvent = (eventName: string, orderData: any, userData?: any) => {
+  if (!isIntercomEnabled()) return;
+
+  const eventData = {
+    order_id: orderData._id || orderData.id,
+    order_total: orderData.totalAmount || orderData.total,
+    item_count: orderData.items?.length || 0,
+    points_earned: orderData.totalPointsEarned || 0,
+    order_status: orderData.status,
+    ...(userData && { user_id: userData.id })
+  };
+
+  try {
+    window.Intercom('trackEvent', eventName, eventData);
+  } catch (error) {
+    console.warn('Intercom trackEvent failed:', error);
+  }
+};
+
+// Predefined Sip Grounds events
+export const sipGroundsEvents = {
+  CAFE_VIEWED: 'cafe_viewed',
+  CAFE_FAVORITED: 'cafe_favorited',
+  ORDER_PLACED: 'order_placed',
+  ORDER_COMPLETED: 'order_completed',
+  POINTS_REDEEMED: 'points_redeemed',
+  REVIEW_WRITTEN: 'review_written',
+  MENU_VIEWED: 'menu_viewed',
+  POLL_PARTICIPATED: 'poll_participated'
 }; 
