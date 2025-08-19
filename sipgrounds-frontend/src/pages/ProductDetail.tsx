@@ -169,7 +169,7 @@ const ProductDetail: React.FC = () => {
           description={product.description}
           keywords={`${product.name}, ${product.category}, camping gear, outdoor equipment, The Campgrounds merchandise`}
           image={product.image}
-          url={`https://thecampground.vercel.app/products/${product._id}`}
+          url={`https://sipgrounds.vercel.app/products/${product._id}`}
           type="product"
           price={product.price}
         />

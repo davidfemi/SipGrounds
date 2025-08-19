@@ -130,7 +130,7 @@ export const updateIntercomUser = (user: any, bookings?: any[]) => {
     user_id: String(userId), // Ensure it's a string
     created_at: user.createdAt ? Math.floor(new Date(user.createdAt).getTime() / 1000) : Math.floor(Date.now() / 1000),
     role: user.role || 'user',
-    website: user.website || 'thecampground.vercel.app',
+    website: user.website || 'sipgrounds.vercel.app',
     
     // User stats from profile
     ...(user.stats && {
