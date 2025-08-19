@@ -1,10 +1,8 @@
 {
-  "version": 2,
-  "buildCommand": "npm install --legacy-peer-deps && npm run build",
-  "outputDirectory": "build",
-  "framework": "create-react-app",
-  "installCommand": "npm install --legacy-peer-deps",
-  "devCommand": "npm start",
+  "buildCommand": "cd sipgrounds-frontend && npm install --legacy-peer-deps && npm run build",
+  "outputDirectory": "sipgrounds-frontend/build",
+  "installCommand": "cd sipgrounds-frontend && npm install --legacy-peer-deps",
+  "devCommand": "cd sipgrounds-frontend && npm start",
   "rewrites": [
     {
       "source": "/(.*)",
