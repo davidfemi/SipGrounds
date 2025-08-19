@@ -42,7 +42,7 @@ A map‑first café discovery website with points, coupon‑code perks, polls, a
 * **Framework:** Next.js 14 (App Router) + TypeScript
 * **UI:** Tailwind CSS + shadcn/ui
 * **Map:** Mapbox GL JS
-* **Auth:** NextAuth (Email, Google, Apple as options)
+* **Auth:** Session-based authentication
 * **DB/ORM:** MongoDB
 * **Payments:** Stripe (Checkout + Webhooks)
 * **Storage:** Cloudinary
@@ -69,7 +69,7 @@ The platform now includes a comprehensive menu system with:
 ### Quick Start
 ```bash
 # Seed menu data
-cd "The Campgrounds/yelpcamp-backend"
+cd sipgrounds-backend
 node seed-menu.js
 
 # Start servers and navigate to /cafes/{cafeId}/menu

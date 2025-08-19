@@ -2,7 +2,7 @@
 
 ## Base URLs
 
-- **Production**: `https://yelpcamp-vvv2.onrender.com`
+- **Production**: `https://sipgrounds.onrender.com`
 - **Development**: `http://localhost:5000`
 
 ## Authentication
@@ -437,7 +437,7 @@ Content-Type: application/json
 
 **Example Request:**
 ```bash
-curl -X GET "https://yelpcamp-vvv2.onrender.com/api/booking/64f8a123456789abcdef0123" \
+curl -X GET "https://sipgrounds.onrender.com/api/booking/64f8a123456789abcdef0123" \
   -H "Authorization: Bearer your-api-access-token" \
   -H "Content-Type: application/json"
 ```
@@ -445,7 +445,7 @@ curl -X GET "https://yelpcamp-vvv2.onrender.com/api/booking/64f8a123456789abcdef
 **JavaScript Example:**
 ```javascript
 const getBookingsForUser = async (userId, apiToken) => {
-  const response = await fetch(`https://yelpcamp-vvv2.onrender.com/api/booking/${userId}`, {
+  const response = await fetch(`https://sipgrounds.onrender.com/api/booking/${userId}`, {
     headers: {
       'Authorization': `Bearer ${apiToken}`,
       'Content-Type': 'application/json'
@@ -575,7 +575,7 @@ The API supports CORS and accepts requests from:
 ```javascript
 // Register new user
 const registerUser = async (userData) => {
-  const response = await fetch('https://yelpcamp-vvv2.onrender.com/api/auth/register', {
+  const response = await fetch('https://sipgrounds.onrender.com/api/auth/register', {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -589,7 +589,7 @@ const registerUser = async (userData) => {
 // Get campgrounds
 const getCampgrounds = async (params = {}) => {
   const queryString = new URLSearchParams(params).toString();
-  const response = await fetch(`https://yelpcamp-vvv2.onrender.com/api/campgrounds?${queryString}`, {
+  const response = await fetch(`https://sipgrounds.onrender.com/api/campgrounds?${queryString}`, {
     credentials: 'include'
   });
   return response.json();
@@ -597,7 +597,7 @@ const getCampgrounds = async (params = {}) => {
 
 // Add review
 const addReview = async (campgroundId, reviewData) => {
-  const response = await fetch(`https://yelpcamp-vvv2.onrender.com/api/campgrounds/${campgroundId}/reviews`, {
+  const response = await fetch(`https://sipgrounds.onrender.com/api/campgrounds/${campgroundId}/reviews`, {
     method: 'POST',
     credentials: 'include',
     headers: {
