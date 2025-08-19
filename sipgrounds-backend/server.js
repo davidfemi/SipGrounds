@@ -1386,7 +1386,7 @@ app.get('/sitemap.xml', catchAsync(async (req, res) => {
     // Use environment variable for frontend URL, with appropriate fallback based on environment
     const frontendUrl = process.env.FRONTEND_URL || 
         (process.env.NODE_ENV === 'production' 
-            ? `https://${req.get('host').replace('yelpcamp-vvv2.onrender.com', 'thecampground.vercel.app')}`
+            ? `https://${req.get('host').replace('sipgrounds.onrender.com', 'thecampground.vercel.app')}`
             : 'http://localhost:3000'
         );
     
@@ -1472,7 +1472,7 @@ app.get('/robots.txt', (req, res) => {
     
     const frontendUrl = process.env.FRONTEND_URL || 
         (process.env.NODE_ENV === 'production' 
-            ? `https://${host.replace('yelpcamp-vvv2.onrender.com', 'thecampground.vercel.app')}`
+            ? `https://${host.replace('sipgrounds.onrender.com', 'thecampground.vercel.app')}`
             : 'http://localhost:3000'
         );
 
