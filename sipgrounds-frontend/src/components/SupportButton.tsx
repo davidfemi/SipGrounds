@@ -21,11 +21,15 @@ const SupportButton: React.FC<SupportButtonProps> = ({
 
   return (
     <Button 
-      variant={variant} 
       size={size}
-      className={className}
+      className={`${className} text-white`}
       onClick={handleClick}
+      style={{ 
+        backgroundColor: '#f59e0b', 
+        borderColor: '#f59e0b' 
+      }}
     >
+      <i className="fas fa-comments me-2"></i>
       {children}
     </Button>
   );

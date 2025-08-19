@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { updateIntercomPage } from './services/intercomService';
+import { updateIntercomPage, initIntercomForVisitors } from './services/intercomService';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
 import BackToTop from './components/BackToTop';
@@ -46,6 +46,11 @@ function IntercomRouteHandler() {
 }
 
 function App() {
+  // Initialize Intercom for visitors when app loads
+  useEffect(() => {
+    initIntercomForVisitors();
+  }, []);
+
   return (
     <CartProvider>
       <div className="App">
