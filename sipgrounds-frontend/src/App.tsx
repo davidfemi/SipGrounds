@@ -46,9 +46,14 @@ function IntercomRouteHandler() {
 }
 
 function App() {
-  // Initialize Intercom for visitors when app loads
+  // Initialize Intercom for visitors when app loads (SPA integration)
   useEffect(() => {
-    initIntercomForVisitors();
+    // Small delay to ensure Intercom script has loaded
+    const timer = setTimeout(() => {
+      initIntercomForVisitors();
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   return (

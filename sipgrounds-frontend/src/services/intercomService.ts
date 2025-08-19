@@ -1,19 +1,20 @@
-// Track if Intercom has been booted
-let isBooted = false;
-
 // Get Intercom app ID from environment variables
 const INTERCOM_APP_ID = process.env.REACT_APP_INTERCOM_APP_ID || 'hqd6b4qh';
 
 // Enable Intercom launcher and activity
 const DISABLE_INTERCOM = false;
 
+// Track if Intercom has been booted and current user state
+let isBooted = false;
+let currentUser: any = null;
+
 // Check if Intercom should be enabled
 const isIntercomEnabled = () => {
   // Return false to disable Intercom entirely
   if (DISABLE_INTERCOM) return false;
   
-  // Enable Intercom if we have an app ID
-  return !!INTERCOM_APP_ID;
+  // Enable Intercom if we have an app ID and window.Intercom exists
+  return !!(INTERCOM_APP_ID && typeof window !== 'undefined' && window.Intercom);
 };
 
 // Booking-related types for better type safety
@@ -92,35 +93,41 @@ const calculateBookingStats = (bookings: any[]): BookingStats => {
   };
 };
 
-// Initialize Intercom for anonymous visitors
+// Initialize Intercom for anonymous visitors (following SPA integration guide)
 export const initIntercomForVisitors = () => {
   if (!isIntercomEnabled()) {
     return;
   }
 
   try {
-    if (!isBooted) {
-      window.Intercom('boot', {
-        app_id: INTERCOM_APP_ID,
-        // No user data for anonymous visitors
-      });
-      isBooted = true;
-    }
+    // Boot Intercom for logged-out visitors as per the SPA guide
+    window.Intercom('boot', {
+      app_id: INTERCOM_APP_ID
+      // No user data for anonymous visitors - they can still chat
+    });
+    isBooted = true;
+    currentUser = null;
+    console.log('🔧 Intercom booted for anonymous visitors');
   } catch (error) {
     console.warn('Intercom visitor init failed:', error);
   }
 };
 
-// Update Intercom with user data including booking information
+// Update Intercom with user data following SPA integration guide
 export const updateIntercomUser = (user: any, bookings?: any[]) => {
   // Skip if Intercom is not enabled
   if (!isIntercomEnabled()) {
     return;
   }
 
+  // If no user provided, convert to visitor mode
   if (!user) {
     try {
-      // If no user, boot for anonymous visitors instead of shutting down
+      // Shutdown current session and start fresh for visitors
+      window.Intercom('shutdown');
+      isBooted = false;
+      currentUser = null;
+      // Boot for anonymous visitors
       initIntercomForVisitors();
     } catch (error) {
       console.warn('Intercom visitor fallback failed:', error);
@@ -175,13 +182,31 @@ export const updateIntercomUser = (user: any, bookings?: any[]) => {
   };
 
   try {
-    if (!isBooted) {
-      // First time - boot with user data
+    // Check if this is a different user or first time
+    const isDifferentUser = currentUser && currentUser.id !== userId;
+    
+    if (!isBooted || isDifferentUser) {
+      // First time or different user - use boot method as per SPA guide
+      if (isDifferentUser) {
+        // Shutdown previous session for different user
+        window.Intercom('shutdown');
+        isBooted = false;
+      }
+      
       window.Intercom('boot', userData);
       isBooted = true;
+      currentUser = { id: userId, email: userEmail };
+      console.log('🔧 Intercom booted for user:', userName);
     } else {
-      // Subsequent updates - use update
-      window.Intercom('update', userData);
+      // Same user, subsequent updates - use update method
+      // Always include user_id and email as per SPA guide
+      const updateData = {
+        ...userData,
+        user_id: String(userId),
+        email: userEmail
+      };
+      window.Intercom('update', updateData);
+      console.log('🔄 Intercom updated for user:', userName);
     }
   } catch (error) {
     console.warn('Intercom update failed:', error);
@@ -285,14 +310,24 @@ export const updateIntercomWithBookings = async (user: any) => {
   }
 };
 
-// Update Intercom when URL changes
+// Update Intercom when URL changes (following SPA integration guide)
 export const updateIntercomPage = () => {
-  if (!isIntercomEnabled()) return;
+  if (!isIntercomEnabled() || !isBooted) return;
   
   try {
-    window.Intercom('update', {
+    // Send update with current timestamp as per SPA guide
+    // This triggers a "ping" to check for new messages/tours
+    const updateData: any = {
       last_request_at: Math.floor(Date.now() / 1000)
-    });
+    };
+    
+    // Always include user identification if we have a current user
+    if (currentUser) {
+      updateData.user_id = currentUser.id;
+      updateData.email = currentUser.email;
+    }
+    
+    window.Intercom('update', updateData);
   } catch (error) {
     console.warn('Intercom page update failed:', error);
   }
@@ -320,13 +355,23 @@ export const hideIntercom = () => {
   }
 };
 
-// Shutdown Intercom (useful for logout)
+// Shutdown Intercom (following SPA guide for logout)
 export const shutdownIntercom = () => {
   if (!isIntercomEnabled()) return;
   
   try {
+    // Shutdown current session to clear cookies and reset state
     window.Intercom('shutdown');
     isBooted = false;
+    currentUser = null;
+    
+    // Immediately boot for anonymous visitors as per SPA guide
+    window.Intercom('boot', {
+      app_id: INTERCOM_APP_ID
+    });
+    isBooted = true;
+    
+    console.log('🔧 Intercom session ended, switched to visitor mode');
   } catch (error) {
     console.warn('Intercom shutdown failed:', error);
   }
