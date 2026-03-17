@@ -28,6 +28,11 @@ const catchAsync = require('./utils/catchAsync');
 const RefundService = require('./utils/refundService');
 const StripeService = require('./utils/stripeService');
 
+// Import Cloudinary + multer for image uploads
+const { cloudinary, storage } = require('./cloudinary');
+const multer = require('multer');
+const upload = multer({ storage });
+
 // Import Mapbox geocoding
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapBoxToken = process.env.MAPBOX_TOKEN;
@@ -329,6 +334,45 @@ app.get('/api/users/profile', authOrToken, catchAsync(async (req, res) => {
     });
 }));
 
+// Update user profile
+app.put('/api/users/profile', isLoggedIn, catchAsync(async (req, res) => {
+    const { profile } = req.body;
+
+    if (!profile) {
+        return res.status(400).json({ success: false, error: 'profile field is required' });
+    }
+
+    const allowedFields = {};
+    if (profile.firstName !== undefined) allowedFields['profile.firstName'] = profile.firstName.trim();
+    if (profile.lastName !== undefined) allowedFields['profile.lastName'] = profile.lastName.trim();
+    if (profile.phone !== undefined) allowedFields['profile.phone'] = profile.phone.trim();
+    if (profile.preferences !== undefined) allowedFields['profile.preferences'] = profile.preferences;
+
+    const updatedUser = await User.findByIdAndUpdate(
+        req.user._id,
+        { $set: allowedFields },
+        { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+        return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    res.json({
+        success: true,
+        data: {
+            user: {
+                id: updatedUser._id,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                profile: updatedUser.profile,
+                points: updatedUser.points,
+                createdAt: updatedUser.createdAt
+            }
+        }
+    });
+}));
+
 // Cafes Routes
 app.get('/api/cafes', catchAsync(async (req, res) => {
     const { 
@@ -441,8 +485,8 @@ const getCafeById = catchAsync(async (req, res) => {
 app.get('/api/cafes/:id', getCafeById);
 app.get('/api/campgrounds/:id', getCafeById);
 
-app.post('/api/campgrounds', isLoggedIn, catchAsync(async (req, res) => {
-    const { title, description, location, price, images } = req.body;
+app.post('/api/campgrounds', isLoggedIn, upload.array('images', 5), catchAsync(async (req, res) => {
+    const { title, description, location, price } = req.body;
     
     // Basic validation
     if (!title || !description || !location || price === undefined) {
@@ -472,7 +516,7 @@ app.post('/api/campgrounds', isLoggedIn, catchAsync(async (req, res) => {
             description: description.trim(),
             location: location.trim(),
             price: Number(price),
-            images: images || [],
+            images: (req.files || []).map(f => ({ url: f.path, filename: f.filename })),
             geometry: geoData.body.features[0].geometry,
             author: req.user._id
         };

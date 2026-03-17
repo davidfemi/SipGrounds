@@ -13,6 +13,7 @@ import {
   Form
 } from 'react-bootstrap';
 import { userAPI, UserProfile as UserProfileType } from '../services/api';
+import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import { updateIntercomUser } from '../services/intercomService';
 import SEOHead from '../components/SEOHead';
@@ -30,6 +31,7 @@ const UserProfile: React.FC = () => {
     lastName: '',
     phone: ''
   });
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -59,6 +61,33 @@ const UserProfile: React.FC = () => {
       console.error('Error fetching user data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openEditModal = () => {
+    setEditForm({
+      firstName: userProfile?.profile?.firstName || '',
+      lastName: userProfile?.profile?.lastName || '',
+      phone: userProfile?.profile?.phone || ''
+    });
+    setShowEditModal(true);
+  };
+
+  const handleProfileUpdate = async () => {
+    setIsSaving(true);
+    try {
+      const response = await userAPI.updateProfile({ profile: editForm });
+      if (response.success) {
+        toast.success('Profile updated successfully!');
+        setShowEditModal(false);
+        await fetchUserData();
+      } else {
+        toast.error('Failed to update profile');
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || 'Failed to update profile');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -208,7 +237,7 @@ const UserProfile: React.FC = () => {
                     <Button 
                       variant="outline-primary" 
                       className="w-100 mt-2"
-                      onClick={() => setShowEditModal(true)}
+                      onClick={openEditModal}
                       style={{ borderColor: '#f59e0b', color: '#f59e0b' }}
                     >
                       <i className="fas fa-edit me-2"></i>
@@ -473,20 +502,20 @@ const UserProfile: React.FC = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="outline-secondary" onClick={() => setShowEditModal(false)}>
+          <Button variant="outline-secondary" onClick={() => setShowEditModal(false)} disabled={isSaving}>
             Cancel
           </Button>
           <Button 
             style={{ backgroundColor: '#f59e0b', borderColor: '#f59e0b' }}
             className="text-white"
-            onClick={() => {
-              // TODO: Implement profile update
-              console.log('Profile update:', editForm);
-              setShowEditModal(false);
-            }}
+            onClick={handleProfileUpdate}
+            disabled={isSaving}
           >
-            <i className="fas fa-save me-2"></i>
-            Save Changes
+            {isSaving ? (
+              <><Spinner animation="border" size="sm" className="me-2" />Saving...</>
+            ) : (
+              <><i className="fas fa-save me-2"></i>Save Changes</>
+            )}
           </Button>
         </Modal.Footer>
       </Modal>

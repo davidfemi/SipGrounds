@@ -232,7 +232,7 @@ const MenuHome: React.FC = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-bottom sticky-top" style={{ top: '76px', zIndex: 1020 }}>
+      <div className="bg-white border-bottom sticky-top" style={{ top: '82px', zIndex: 1020 }}>
         <Container>
           <div className="d-flex justify-content-center py-3">
             <div className="d-flex gap-4">

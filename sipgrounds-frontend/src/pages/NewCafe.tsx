@@ -11,9 +11,11 @@ import {
   Spinner,
   Image
 } from 'react-bootstrap';
+import axios from 'axios';
 import { toast } from 'react-toastify';
-import { cafesAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 interface FormData {
   title: string;
@@ -170,20 +172,9 @@ const NewCampground: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const uploadImages = async (images: File[]): Promise<Array<{ url: string; filename: string }>> => {
-    // For now, we'll create mock image data since we don't have Cloudinary setup in frontend
-    // In a real implementation, you'd upload to Cloudinary here
-    const mockImages = images.map((file, index) => ({
-      url: URL.createObjectURL(file), // This would be the Cloudinary URL
-      filename: `campground_${Date.now()}_${index}` // This would be the Cloudinary filename
-    }));
-    
-    return mockImages;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -191,29 +182,28 @@ const NewCampground: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Upload images first (in real app, this would go to Cloudinary)
-      const uploadedImages = await uploadImages(formData.images);
+      const payload = new FormData();
+      payload.append('title', formData.title.trim());
+      payload.append('description', formData.description.trim());
+      payload.append('location', formData.location.trim());
+      payload.append('price', formData.price);
+      formData.images.forEach(img => payload.append('images', img));
 
-      // Create campground data
-      const campgroundData = {
-        title: formData.title.trim(),
-        description: formData.description.trim(),
-        location: formData.location.trim(),
-        price: Number(formData.price),
-        images: uploadedImages
-      };
+      const response = await axios.post(
+        `${API_BASE_URL}/api/campgrounds`,
+        payload,
+        { headers: { 'Content-Type': 'multipart/form-data' }, withCredentials: true }
+      );
 
-      const response = await cafesAPI.create(campgroundData);
-
-      if (response.success && response.data) {
+      if (response.data.success && response.data.data) {
         toast.success('Cafe created successfully!');
-        navigate(`/cafes/${response.data.campground?._id || response.data.cafe?._id}`);
+        navigate(`/cafes/${response.data.data.campground?._id || response.data.data.cafe?._id}`);
       } else {
-                                toast.error('Failed to create cafe');
+        toast.error('Failed to create cafe');
       }
     } catch (error: any) {
-      console.error('Error creating campground:', error);
-      toast.error(error.response?.data?.message || 'Failed to create cafe');
+      console.error('Error creating cafe:', error);
+      toast.error(error.response?.data?.error || 'Failed to create cafe');
     } finally {
       setIsSubmitting(false);
     }

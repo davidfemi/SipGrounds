@@ -31,6 +31,12 @@ import MenuItemDetail from './pages/MenuItemDetail';
 import ProtectedRoute from './components/ProtectedRoute';
 import BookingDetail from './pages/BookingDetail';
 import Sitemap from './pages/Sitemap';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import FAQ from './pages/FAQ';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import NotFound from './pages/NotFound';
 
 import './App.css';
 
@@ -61,7 +67,7 @@ function App() {
       <div className="App">
         <IntercomRouteHandler />
         <Navbar />
-      <main className="container mt-4">
+      <main className="container">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -80,6 +86,12 @@ function App() {
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/polls" element={<Polls />} />
           <Route path="/sitemap" element={<Sitemap />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="*" element={<NotFound />} />
           <Route
             path="/orders"
             element={

@@ -1,165 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Card, Breadcrumb, Alert, Spinner, Button, Badge, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Card, Breadcrumb, Alert, Spinner, Button, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { menuAPI, MenuItem } from '../services/api';
+import { menuGroupsAPI, MenuItem } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import SEOHead from '../components/SEOHead';
 
-// Subcategory configurations with sample items
-const subcategoryConfig: { [key: string]: any } = {
-  'brewed-coffee': {
-    name: 'Brewed Coffee',
-    description: 'Our signature blends, brewed fresh daily',
-    categoryName: 'Hot Coffee',
-    items: [
-      {
-        id: 'blonde-roast-sumatra',
-        name: 'Blonde Roast - Sumatra',
-        description: 'Light and smooth with herbal notes',
-        image: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=400',
-        price: 2.45,
-        sizes: [
-          { name: 'Short', price: 2.45 },
-          { name: 'Tall', price: 2.65 },
-          { name: 'Grande', price: 2.95 },
-          { name: 'Venti', price: 3.25 }
-        ]
-      },
-      {
-        id: 'medium-roast-pike-place',
-        name: 'Medium Roast - Pike Place® Roast',
-        description: 'Smooth and balanced with rich flavor',
-        image: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=400',
-        price: 2.45,
-        sizes: [
-          { name: 'Short', price: 2.45 },
-          { name: 'Tall', price: 2.65 },
-          { name: 'Grande', price: 2.95 },
-          { name: 'Venti', price: 3.25 }
-        ]
-      },
-      {
-        id: 'dark-roast-sumatra',
-        name: 'Dark Roast - Sumatra',
-        description: 'Full-bodied with earthy, herbal notes',
-        image: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=400',
-        price: 2.45,
-        sizes: [
-          { name: 'Short', price: 2.45 },
-          { name: 'Tall', price: 2.65 },
-          { name: 'Grande', price: 2.95 },
-          { name: 'Venti', price: 3.25 }
-        ]
-      },
-      {
-        id: 'dark-roast-caffe-verona',
-        name: 'Dark Roast - Caffè Verona®',
-        description: 'Well-balanced with a rich, approachable taste',
-        image: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=400',
-        price: 2.45,
-        sizes: [
-          { name: 'Short', price: 2.45 },
-          { name: 'Tall', price: 2.65 },
-          { name: 'Grande', price: 2.95 },
-          { name: 'Venti', price: 3.25 }
-        ]
-      },
-      {
-        id: 'decaf-roast-pike-place',
-        name: 'Decaf Roast - Pike Place® Roast',
-        description: 'Same great taste, without the caffeine',
-        image: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=400',
-        price: 2.45,
-        sizes: [
-          { name: 'Short', price: 2.45 },
-          { name: 'Tall', price: 2.65 },
-          { name: 'Grande', price: 2.95 },
-          { name: 'Venti', price: 3.25 }
-        ]
-      },
-      {
-        id: 'caffe-misto',
-        name: 'Caffè Misto',
-        description: 'Coffee with steamed milk',
-        image: 'https://images.unsplash.com/photo-1561047029-3000c68339ca?w=400',
-        price: 3.45,
-        sizes: [
-          { name: 'Short', price: 3.45 },
-          { name: 'Tall', price: 3.65 },
-          { name: 'Grande', price: 4.15 },
-          { name: 'Venti', price: 4.45 }
-        ]
-      }
-    ]
-  },
-  'latte': {
-    name: 'Latte',
-    description: 'Rich espresso with steamed milk',
-    categoryName: 'Hot Coffee',
-    items: [
-      {
-        id: 'caffe-latte',
-        name: 'Caffè Latte',
-        description: 'Our dark, rich espresso balanced with steamed milk',
-        image: 'https://images.unsplash.com/photo-1561047029-3000c68339ca?w=400',
-        price: 4.45,
-        sizes: [
-          { name: 'Short', price: 4.45 },
-          { name: 'Tall', price: 4.65 },
-          { name: 'Grande', price: 5.25 },
-          { name: 'Venti', price: 5.65 }
-        ]
-      },
-      {
-        id: 'cinnamon-dolce-latte',
-        name: 'Cinnamon Dolce Latte',
-        description: 'Espresso with steamed milk and cinnamon dolce syrup',
-        image: 'https://images.unsplash.com/photo-1561047029-3000c68339ca?w=400',
-        price: 5.25,
-        sizes: [
-          { name: 'Short', price: 5.25 },
-          { name: 'Tall', price: 5.45 },
-          { name: 'Grande', price: 6.05 },
-          { name: 'Venti', price: 6.45 }
-        ]
-      },
-      {
-        id: 'starbucks-blonde-vanilla-latte',
-        name: 'Starbucks® Blonde Vanilla Latte',
-        description: 'Blonde espresso with vanilla syrup and steamed milk',
-        image: 'https://images.unsplash.com/photo-1561047029-3000c68339ca?w=400',
-        price: 5.25,
-        sizes: [
-          { name: 'Short', price: 5.25 },
-          { name: 'Tall', price: 5.45 },
-          { name: 'Grande', price: 6.05 },
-          { name: 'Venti', price: 6.45 }
-        ]
-      },
-      {
-        id: 'lavender-oatmilk-latte',
-        name: 'Lavender Oatmilk Latte',
-        description: 'Espresso with lavender syrup and oat milk',
-        image: 'https://images.unsplash.com/photo-1561047029-3000c68339ca?w=400',
-        price: 5.65,
-        sizes: [
-          { name: 'Short', price: 5.65 },
-          { name: 'Tall', price: 5.85 },
-          { name: 'Grande', price: 6.45 },
-          { name: 'Venti', price: 6.85 }
-        ]
-      }
-    ]
-  }
-};
 
 const MenuSubcategory: React.FC = () => {
   const { categoryId, subcategoryId } = useParams<{ categoryId: string; subcategoryId: string }>();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [items, setItems] = useState<MenuItem[]>([]);
+  const [groupName, setGroupName] = useState('');
+  const [groupDescription, setGroupDescription] = useState('');
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [showCustomization, setShowCustomization] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>('');
@@ -168,11 +24,35 @@ const MenuSubcategory: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
 
-  const subcategory = subcategoryId ? subcategoryConfig[subcategoryId] : null;
+  useEffect(() => {
+    if (!subcategoryId) return;
+    const fetchItems = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await menuGroupsAPI.getGroupItems(subcategoryId);
+        if (response.success && response.data) {
+          setItems(response.data.items || []);
+          setGroupName(response.data.group?.name || subcategoryId);
+          setGroupDescription(response.data.group?.description || '');
+        } else {
+          setError('Failed to load menu items');
+        }
+      } catch (err) {
+        setError('Could not load menu items. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchItems();
+  }, [subcategoryId]);
 
-  const handleItemClick = (item: any) => {
-    setSelectedItem(item);
-    setSelectedSize(item.sizes ? item.sizes[0].name : '');
+  const handleItemClick = (item: MenuItem) => {
+    // Normalise API shape: customization.sizes → sizes for the modal
+    const sizes = item.customization?.sizes || [];
+    const normalised = { ...item, sizes };
+    setSelectedItem(normalised);
+    setSelectedSize(sizes.length > 0 ? sizes[0].name : '');
     setQuantity(1);
     setShowCustomization(true);
   };
@@ -189,14 +69,14 @@ const MenuSubcategory: React.FC = () => {
     const cartItem = {
       ...selectedItem,
       price: finalPrice,
-      _id: selectedItem.id,
+      _id: selectedItem._id || selectedItem.id,
       category: 'drinks' as const,
       itemType: 'DrinkItem' as const,
-      pointsEarned: Math.ceil(finalPrice),
-      inStock: true,
-      isPopular: false,
-      isRecommended: false,
-      preparationTime: 3
+      pointsEarned: selectedItem.pointsEarned || Math.ceil(finalPrice),
+      inStock: selectedItem.inStock ?? true,
+      isPopular: selectedItem.isPopular ?? false,
+      isRecommended: selectedItem.isRecommended ?? false,
+      preparationTime: selectedItem.preparationTime ?? 3
     };
 
     const customizations = selectedSize ? { size: selectedSize } : undefined;
@@ -206,32 +86,22 @@ const MenuSubcategory: React.FC = () => {
     setShowCustomization(false);
   };
 
-  if (!subcategory) {
-    return (
-      <Container className="py-5">
-        <Alert variant="danger">
-          Subcategory not found. <Link to="/menu">Return to Menu</Link>
-        </Alert>
-      </Container>
-    );
-  }
-
   return (
     <>
-      <SEOHead 
-        title={`${subcategory.name} - ${subcategory.categoryName} - Menu - SipGrounds`} 
-        description={subcategory.description} 
+      <SEOHead
+        title={`${groupName} - Menu - SipGrounds`}
+        description={groupDescription}
       />
-      
+
       {/* Breadcrumb */}
       <div className="bg-light py-3">
         <Container>
           <Breadcrumb>
             <Breadcrumb.Item as={Link} to="/menu">Menu</Breadcrumb.Item>
             <Breadcrumb.Item as={Link} to={`/menu/${categoryId}`}>
-              {subcategory.categoryName}
+              {categoryId}
             </Breadcrumb.Item>
-            <Breadcrumb.Item active>{subcategory.name}</Breadcrumb.Item>
+            <Breadcrumb.Item active>{groupName}</Breadcrumb.Item>
           </Breadcrumb>
         </Container>
       </div>
@@ -241,13 +111,10 @@ const MenuSubcategory: React.FC = () => {
         <Container>
           <div className="d-flex justify-content-between align-items-center">
             <div>
-              <h1 className="mb-2">{subcategory.name}</h1>
-              <p className="text-muted mb-0">{subcategory.description}</p>
+              <h1 className="mb-2">{groupName}</h1>
+              {groupDescription && <p className="text-muted mb-0">{groupDescription}</p>}
             </div>
-            <button 
-              className="btn btn-outline-primary"
-              onClick={() => navigate(-1)}
-            >
+            <button className="btn btn-outline-primary" onClick={() => navigate(-1)}>
               ← Back
             </button>
           </div>
@@ -257,17 +124,19 @@ const MenuSubcategory: React.FC = () => {
       {/* Items Grid */}
       <Container className="py-5">
         {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
-        
+
         {loading ? (
           <div className="text-center py-5">
             <Spinner animation="border" role="status">
               <span className="visually-hidden">Loading...</span>
             </Spinner>
           </div>
+        ) : items.length === 0 && !error ? (
+          <Alert variant="info">No items found for this category.</Alert>
         ) : (
           <Row className="g-4">
-            {subcategory.items.map((item: any) => (
-              <Col key={item.id} md={6} lg={4} xl={3}>
+            {items.map((item: MenuItem) => (
+              <Col key={item._id} md={6} lg={4} xl={3}>
                 <Card 
                   className="h-100 border-0 shadow-sm item-card"
                   style={{ cursor: 'pointer' }}
@@ -293,8 +162,8 @@ const MenuSubcategory: React.FC = () => {
                       <div className="d-flex justify-content-between align-items-center">
                         <div className="fw-bold text-primary">
                           ${item.price.toFixed(2)}
-                          {item.sizes && item.sizes.length > 1 && (
-                            <small className="text-muted"> - ${item.sizes[item.sizes.length - 1].price.toFixed(2)}</small>
+                          {item.customization?.sizes && item.customization.sizes.length > 1 && (
+                            <small className="text-muted"> - ${item.customization.sizes[item.customization.sizes.length - 1].price.toFixed(2)}</small>
                           )}
                         </div>
                         <Button 

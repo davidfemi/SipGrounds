@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <BootstrapNavbar bg="white" variant="light" expand="lg" className="custom-navbar border-bottom">
+    <BootstrapNavbar bg="white" variant="light" expand="lg" sticky="top" className="custom-navbar border-bottom">
       <Container>
         <BootstrapNavbar.Brand as={Link} to="/" className="d-flex align-items-center">
           <img 
