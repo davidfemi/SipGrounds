@@ -5,7 +5,7 @@ const Cafe = require('../models/cafe');
 const User = require('../models/user');
 
 // Initialize Gemini AI with your provided key
-const genAI = new GoogleGenerativeAI('***REMOVED-GEMINI-KEY***');
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Configuration
 const RATE_LIMIT_DELAY = 3000; // 3 seconds between requests to be safe
